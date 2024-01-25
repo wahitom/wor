@@ -4,6 +4,7 @@ import Announcements from "./pages/Announcements";
 import Contacts from "./components/Contacts";
 import WorkoutForm from "./pages/WorkoutForm";
 import Workout from "./pages/Workouts";
+import Reviews from "./pages/Reviews";
 
 import Home from "./pages/Home";
 // Import Bootstrap CSS
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/announcements" element={<Announcements />} />
         <Route path="/contacts" element={<Contacts />} />
+        <Route path="/reviews" element={<Reviews />} />
       </Routes>
     </div>
   );
