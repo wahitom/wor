@@ -29,7 +29,7 @@ const Navbar = () => {
   const { isAuthenticated, logout } = useContext(AuthContext);
 
   return (
-    <Flex p="4" bg="blue.200" color="white">
+    <Flex p="4" bg="blue.200" color="white" style={{ height: "20vh" }}>
       <Image
         src="https://images.template.net/wp-content/uploads/2014/09/Zenith-Fitness-Logo.jpg"
         alt="Gym Logo"
@@ -77,7 +77,7 @@ const Navbar = () => {
               </Link>
               <MenuItem onClick={logout}>
                 <Button variant="link" color="red.500">
-                  Logout
+                  <Link to={"/"}> Logout</Link>
                 </Button>
               </MenuItem>
             </MenuList>
