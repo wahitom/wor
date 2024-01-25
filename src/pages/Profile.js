@@ -20,6 +20,7 @@ const Profile = () => {
   const [userData, setUserData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [editedUserData, setEditedUserData] = useState({});
+  const { isAuthenticated } = useContext(AuthContext);
   const toast = useToast();
 
   useEffect(() => {
@@ -47,6 +48,7 @@ const Profile = () => {
         setIsEditing(false);
         setUserData(response.data);
       })
+
       .catch((error) => {
         console.error("Error updating user data", error);
         toast({
