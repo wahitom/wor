@@ -18,6 +18,7 @@ import {
 
 import { ChevronDownIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 
+// Access color mode and toggle function from Chakra UI
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
 
@@ -84,6 +85,8 @@ const Navbar = () => {
           </Menu>
         </>
       ) : (
+          
+          // Display Login Button if not authenticated
         <Button sx={{ my: 2, color: "black", display: "block" }}>
           <Link to={"/login "}>Login</Link>
         </Button>

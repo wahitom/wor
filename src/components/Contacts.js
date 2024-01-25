@@ -1,5 +1,6 @@
 import React from "react";
 
+// Component for displaying contact information and a contact form
 const Contacts = () => {
   return (
     <div>

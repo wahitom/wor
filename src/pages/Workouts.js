@@ -10,10 +10,14 @@ import {
 } from "@chakra-ui/react";
 import { api } from "../utils/utils";
 
+// State to store the list of workouts
 const Workout = () => {
   const [workouts, setWorkouts] = useState([]);
+
+  // State for search input
   const [search, setSearch] = useState("");
 
+  // Fetch workouts from the API when the component mounts
   useEffect(() => {
     api
       .get("workouts")
@@ -25,6 +29,7 @@ const Workout = () => {
       });
   }, []);
 
+  // Filter workouts based on search input
   const filteredWorkouts = workouts.filter((workout) =>
     workout.name.toLowerCase().includes(search.toLowerCase())
   );

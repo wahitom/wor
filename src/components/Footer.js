@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from "react-icons/fa";
 
+// Footer component containing contact information, social media handles, and about section
 const Footer = () => {
   return (
     <Box bg="blue.200" color="white" p={6} mt={8}>

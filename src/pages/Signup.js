@@ -17,14 +17,19 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { api } from "../utils/utils";
 
+// Access the navigation functionality and authentication state from context
 function Signup() {
   const navigate = useNavigate();
   const { setIsAuthenticated } = useContext(AuthContext);
 
+  // Formik hook for managing form state and submission with Yup validation
   const formik = useFormik({
+    // Define validation rules for each form field
     validationSchema: Yup.object().shape({
       first_name: Yup.string().required("First Name is required"),
       last_name: Yup.string().required("Last Name is required"),
+
+      // Repeat similar structure for other form fields
       email: Yup.string()
         .email("Enter a valid email address")
         .required("Email address is required"),
@@ -35,6 +40,8 @@ function Signup() {
       gender: Yup.string().required("Gender is required"),
       role: Yup.string().required("Role is required"),
     }),
+
+    // Initialize form fields with default values
     initialValues: {
       first_name: "",
       last_name: "",
@@ -45,12 +52,15 @@ function Signup() {
       weight: "",
       gender: "",
       role: "",
+      // Repeat similar structure for other form fields
     },
+    // Send a POST request to the API with form values
     onSubmit: async (values, { resetForm }) => {
       try {
         const res = await api.post("users", values);
         console.log(res);
 
+        // Show success message using toast notification
         toast.success(res.data.message);
 
         // Reset the form if successful
@@ -63,7 +73,7 @@ function Signup() {
         // Navigate user to homepage
         navigate("/");
 
-        // Persist user
+        // Handle errors and show error message using toast notification
       } catch (error) {
         const data = error.response.data;
 

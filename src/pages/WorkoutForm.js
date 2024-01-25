@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import { Input, Button, FormControl, FormLabel, Box } from "@chakra-ui/react";
 import { api } from "../utils/utils";
 
+// Formik hook for managing form state and submission
 const WorkoutForm = () => {
   const formik = useFormik({
     initialValues: {
@@ -16,7 +17,10 @@ const WorkoutForm = () => {
     },
     onSubmit: async (values, { resetForm }) => {
       try {
+        // Send a POST request to the API with form values
         const response = await api.post("workouts", values);
+
+        // Reset form after successful submission
         resetForm();
         console.log(response.data);
       } catch (error) {

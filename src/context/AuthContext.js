@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import dayjs from "dayjs";
 
+// Create context for authentication
 export const AuthContext = createContext({
   isAuthenticated: false,
   user: null,
@@ -9,12 +10,15 @@ export const AuthContext = createContext({
   logout: () => null,
 });
 
+// Authentication Provider component
 export const AuthProvider = ({ children }) => {
+  // State for authentication status
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // State for user details
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // get session from local storage
+    // Get session from local storage
     const session = JSON.parse(localStorage.getItem("session"));
 
     // if session exists, set authenticated to true
@@ -25,14 +29,17 @@ export const AuthProvider = ({ children }) => {
       const isValid = dayjs().isBefore(expiry);
 
       if (isValid) {
+        // Set user details and authenticate
         setUser(session.user);
         setIsAuthenticated(true);
       } else {
+        // Logout if refresh token is invalid
         logout();
       }
     }
   }, []);
 
+  // Logout function
   const logout = () => {
     // remove session from localstorage
     localStorage.removeItem("session");
