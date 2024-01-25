@@ -12,7 +12,7 @@ import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
 
 import Home from "./pages/Home";
-import Footer from "./components/Footer";
+//import Footer from "./components/Footer";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 // Import Bootstrap CSS
@@ -31,7 +31,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
-      <Footer />
     </div>
   );
 }

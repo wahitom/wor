@@ -45,6 +45,10 @@ const Navbar = () => {
         Workouts
       </Link>
 
+      <Link to="/form" style={linkStyles}>
+        Add-Workout
+      </Link>
+
       <Link to="/announcements" style={linkStyles}>
         Announcements
       </Link>
