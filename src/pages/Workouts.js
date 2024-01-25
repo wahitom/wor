@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Box, Image, Text, VStack, Button, Flex, Input} from '@chakra-ui/react';
 import { api } from '../utils/utils';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Workout = () => {
     const [workouts, setWorkouts] = useState([]);
@@ -20,10 +22,13 @@ const Workout = () => {
         workout.name.toLowerCase().includes(search.toLowerCase())
     );
 
-    
+    const bookWorkout = (workoutId, workoutName) => {
+        toast.success(`Successfully booked ${workoutName}!`);
+    };
 
     return (
         <div>
+            <ToastContainer />
             <Input
                 placeholder="Search workouts..."
                 value={search}
@@ -40,9 +45,9 @@ const Workout = () => {
                             <Text fontWeight="bold">Name : {workout.name}</Text>
                             <Text>Trainer : {workout.trainer}</Text>
                             <Text>Description : {workout.description}</Text>
-                            <Text>ksh.{workout.price}</Text>
+                            <Text>Price:{workout.price}</Text>
                             <Text>{workout.time}</Text>
-                            <Button colorScheme="teal" mt={4}>
+                            <Button colorScheme="teal" mt={4} onClick={() => bookWorkout(workout.id, workout.name)}>
                                 Book Now
                             </Button>
                         </VStack>

@@ -23,6 +23,27 @@ const WorkoutForm = () => {
         console.error('Error:', error);
       }
     },
+    validate: (values) => {
+      const errors = {};
+
+      if (!values.name) {
+        errors.name = 'Required';
+      }
+      if (!values.trainer) {
+        errors.trainer = 'Required';
+      }
+      if (!values.description) {
+        errors.description = 'Required';
+      }
+      if (!values.image) {
+        errors.image = 'Required';
+      }
+      if (!values.time) {
+        errors.time = 'Required';
+      }
+
+      return errors;
+    },
   });
 
   return (
@@ -46,7 +67,7 @@ const WorkoutForm = () => {
             value={formik.values.users_id}
           />
         </FormControl>
-        <FormControl id="name" mb={4}>
+        <FormControl id="name" mb={4} isInvalid={formik.errors.name && formik.touched.name}>
           <FormLabel>Name:</FormLabel>
           <Input
             type="text"
@@ -57,7 +78,7 @@ const WorkoutForm = () => {
           />
         </FormControl>
 
-        <FormControl id="trainer" mb={4}>
+        <FormControl id="trainer" mb={4} isInvalid={formik.errors.trainer && formik.touched.trainer}>
           <FormLabel>Trainer:</FormLabel>
           <Input
             type="text"
@@ -68,7 +89,7 @@ const WorkoutForm = () => {
           />
         </FormControl>
 
-        <FormControl id="description" mb={4}>
+        <FormControl id="description" mb={4} isInvalid={formik.errors.description && formik.touched.description}>
           <FormLabel>Description:</FormLabel>
           <Input
             type="text"
@@ -79,7 +100,7 @@ const WorkoutForm = () => {
           />
         </FormControl>
 
-        <FormControl id="image" mb={4}>
+        <FormControl id="image" mb={4} isInvalid={formik.errors.image && formik.touched.image}>
           <FormLabel>Image:</FormLabel>
           <Input
             type="text"
@@ -101,7 +122,7 @@ const WorkoutForm = () => {
           />
         </FormControl>
 
-        <FormControl id="time" mb={4}>
+        <FormControl id="time" mb={4} isInvalid={formik.errors.time && formik.touched.time}>
           <FormLabel>Time:</FormLabel>
           <Input
             type="text"
