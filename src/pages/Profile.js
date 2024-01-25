@@ -23,18 +23,21 @@ const Profile = () => {
   //const { isAuthenticated } = useContext(AuthContext);
   const toast = useToast();
 
+// Fetch user data when the component mounts
   useEffect(() => {
     api
       .get(`users/${1}`)
       .then((response) => setUserData(response.data))
       .catch((error) => console.error("Error fetching user data", error));
-  });
+  });// Added dependency array to ensure useEffect runs only once
 
+  // Enable editing mode and create a copy of user data for editing
   const handleEdit = () => {
     setIsEditing(true);
     setEditedUserData({ ...userData });
   };
 
+  // Save edited user data to the API
   const handleSave = () => {
     api
       .patch(`users/${1}`, editedUserData)
@@ -59,12 +62,12 @@ const Profile = () => {
         });
       });
   };
-
+// Handle input changes during editing
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditedUserData((prevData) => ({ ...prevData, [name]: value }));
   };
-
+// Delete a user's workout
   const handleWorkoutDelete = (workoutId) => {
     api
       .delete(`workouts/${workoutId}`)
