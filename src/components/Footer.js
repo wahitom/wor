@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Flex, Heading, Text, Link, IconButton, Icon } from '@chakra-ui/react';
 import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from 'react-icons/fa';
 
-
+// Footer component containing contact information, social media handles, and about section
 const Footer = () => {
  return (
    <Box bgColor="#2ecc71" color="white" p={6} mt={8}>
