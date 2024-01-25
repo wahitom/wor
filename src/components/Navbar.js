@@ -85,7 +85,7 @@ const Navbar = () => {
           </Menu>
         </>
       ) : (
-        <Button sx={{ my: 2, color: "white", display: "block" }}>
+        <Button sx={{ my: 2, color: "black", display: "block" }}>
           <Link to={"/login "}>Login</Link>
         </Button>
       )}
