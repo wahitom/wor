@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+//import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import {
   ChakraProvider,
@@ -42,7 +42,7 @@ function Login() {
 
         toast.success(res.data.message);
 
-        //   reset for if successful
+        //reset for if successful
         resetForm();
 
         // 1. store details inside localstorage
@@ -53,7 +53,7 @@ function Login() {
         navigate("/");
 
         //persist user
-        //    redirect user to home page
+        
       } catch (error) {
         const data = error.response.data;
 
@@ -104,10 +104,10 @@ function Login() {
                   name="email"
                   autoComplete="email"
                   onChange={formik.handleChange}
+                  autoFocus
                   onBlur={formik.onBlur}
                   value={formik.values.email}
-                  // error={Boolean(formik.errors.email)}
-                  // helperText={formik.errors.email}
+                 //helperText={formik.errors.email}
                 />
                 {/* Input for password */}
                 <Input
@@ -122,7 +122,7 @@ function Login() {
                   onBlur={formik.onBlur}
                   value={formik.values.password}
                   // error={Boolean(formik.errors.password)}
-                  // helperText={formik.errors.password}
+                  //helperText={formik.errors.password}
                 />
                 {/* Button for submitting the form */}
                 <Button
@@ -131,7 +131,7 @@ function Login() {
                   size="lg"
                   fontSize="md"
                 >
-                  Log In
+                 Login
                 </Button>
                 {/* Link to sign up */}
                 <p>

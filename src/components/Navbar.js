@@ -1,5 +1,6 @@
-import React from "react";
+import React ,{useContext} from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 import {
   Flex,
   Image,
@@ -24,7 +25,10 @@ const Navbar = () => {
  const linkStyles = {
          padding: "10px",
        };
-
+  
+  // here we check if a user is signed in using the authprovider
+  const { isAuthenticated , logout } = useContext(AuthContext);
+  
   return (
     <Flex p="4" bg="blue.200" color="white">
       <Image
@@ -37,46 +41,54 @@ const Navbar = () => {
         Vitality Gym
       </Text>
       <Spacer />
-      <Link to="/" style={linkStyles}>
-        Home
-      </Link>
-
-      <Link to="/workouts" style={linkStyles}>
-        Workouts
-      </Link>
-
-      <Link to="/announcements" style={linkStyles}>
-        Announcements
-      </Link>
-
-      <Link to="/reviews" style={linkStyles}>
-        Reviews
-      </Link>
-      <Spacer />
-
-      <IconButton
-        icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-        onClick={toggleColorMode}
-        size="sm"
-        ml={2}
-        style={linkStyles}
-      />
-      <Menu>
-        <MenuButton
-          as={Button}
-          rightIcon={<ChevronDownIcon />}
-          bg="black"
-          color="white"
-        >
-          <Avatar size="sm" name="User" />
-        </MenuButton>
-        <MenuList color="white">
-          <Link to="/profile">
-            <MenuItem>Profile</MenuItem>
+      {isAuthenticated ? (
+        <>
+          <Link to="/" style={linkStyles}>
+            Home
           </Link>
-          <MenuItem>Logout</MenuItem>
-        </MenuList>
-      </Menu>
+          <Link to="/workouts" style={linkStyles}>
+            Workouts
+          </Link>
+          <Link to="/announcements" style={linkStyles}>
+            Announcements
+          </Link>
+          <Link to="/reviews" style={linkStyles}>
+            Reviews
+          </Link>
+          <Spacer />
+          <IconButton
+            icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+            onClick={toggleColorMode}
+            size="sm"
+            ml={2}
+            style={linkStyles}
+          />
+          <Menu>
+            <MenuButton
+              as={Button}
+              rightIcon={<ChevronDownIcon />}
+              bg="black"
+              color="white"
+            >
+              <Avatar size="sm" name="User" />
+            </MenuButton>
+            <MenuList color="white">
+              <Link to="/profile">
+                <MenuItem>Profile</MenuItem>
+              </Link>
+              <MenuItem onClick={logout}>
+                <Button variant="link" color="red.500">
+                  Logout
+                </Button>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </>
+      ) : (
+        <Button sx={{ my: 2, color: "white", display: "block" }}>
+          <Link to={"/login "}>Login</Link>
+        </Button>
+      )}
     </Flex>
   );
 };
