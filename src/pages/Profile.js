@@ -12,15 +12,15 @@ import {
   Button,
   Input,
   IconButton,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
-import {  DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 const Profile = () => {
   const [userData, setUserData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [editedUserData, setEditedUserData] = useState({});
-  const { isAuthenticated } = useContext(AuthContext);
+  //const { isAuthenticated } = useContext(AuthContext);
   const toast = useToast();
 
   useEffect(() => {
@@ -75,7 +75,6 @@ const Profile = () => {
           duration: 3000,
           isClosable: true,
         });
-
       })
       .catch((error) => {
         console.error("Error deleting workout", error);
@@ -149,7 +148,7 @@ const Profile = () => {
                 <Td>
                   <Input
                     name="password"
-                    type = "password"
+                    type="password"
                     value={editedUserData.password}
                     onChange={handleInputChange}
                   />
