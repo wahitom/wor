@@ -1,26 +1,26 @@
-import React from 'react';
-import { useFormik } from 'formik';
-import { Input, Button, FormControl, FormLabel, Box } from '@chakra-ui/react';
-import { api } from '../utils/utils';
+import React from "react";
+import { useFormik } from "formik";
+import { Input, Button, FormControl, FormLabel, Box } from "@chakra-ui/react";
+import { api } from "../utils/utils";
 
 const WorkoutForm = () => {
   const formik = useFormik({
     initialValues: {
-      users_id: 0,
-      name: '',
-      trainer: '',
-      description: '',
-      image: '',
+      // users_id: 0,
+      name: "",
+      trainer: "",
+      description: "",
+      image: "",
       price: 0,
-      time: '',
+      time: "",
     },
     onSubmit: async (values, { resetForm }) => {
       try {
-        const response = await api.post('workouts', values);
+        const response = await api.post("workouts", values);
         resetForm();
         console.log(response.data);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     },
   });
@@ -37,14 +37,14 @@ const WorkoutForm = () => {
     >
       <form onSubmit={formik.handleSubmit}>
         <FormControl id="users_id" mb={4}>
-          <FormLabel>Users_id:</FormLabel>
+          {/* <FormLabel>Users_id:</FormLabel>
           <Input
             type="number"
             id="users_id"
             name="users_id"
             onChange={formik.handleChange}
             value={formik.values.users_id}
-          />
+          /> */}
         </FormControl>
         <FormControl id="name" mb={4}>
           <FormLabel>Name:</FormLabel>

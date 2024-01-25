@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Box, Button, Flex, Image, Input, Text } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 const heroImage =
   "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
@@ -63,8 +64,7 @@ const Home = () => {
             crafting a comprehensive fitness experience that accommodates
             individuals at every point in their fitness journey, irrespective of
             their starting point or level of expertise. In your pursuit of a
-            healthier lifestyle, [Your Website Name] stands as a beacon of
-            support.
+            healthier lifestyle, Vitality Gym stands as a beacon of support.
           </Text>
         </Flex>
       </Flex>
@@ -80,19 +80,20 @@ const Home = () => {
         </Text>
         <Flex w="75%" mt="4" alignItems="center">
           <Text fontSize="lg" mr="4">
-            In your pursuit of a healthier lifestyle, [Your Website Name] stands
-            as a beacon of support, providing you with not only a myriad of
-            workout options but also fostering an environment that promotes
-            inclusivity and encouragement. We're not just a fitness platform;
-            we're a community dedicated to making your journey enjoyable,
-            accessible, and, most importantly, tailored to your individual
-            needs.
+            In your pursuit of a healthier lifestyle, Vitality Gym stands as a
+            beacon of support, providing you with not only a myriad of workout
+            options but also fostering an environment that promotes inclusivity
+            and encouragement. We're not just a fitness platform; we're a
+            community dedicated to making your journey enjoyable, accessible,
+            and, most importantly, tailored to your individual needs.
             <br />
             <br />
             <br />
-            <Button colorScheme="purple" size="lg">
-              View Workouts
-            </Button>
+            <Link to="/workouts">
+              <Button colorScheme="purple" size="lg">
+                View Workouts
+              </Button>
+            </Link>
           </Text>
 
           <Image
@@ -120,23 +121,27 @@ const Home = () => {
             <br />
             <br />
             <br />
-            <Button colorScheme="purple" size="lg">
-              Contact us
-            </Button>
+            <Link to="/contacts">
+              <Button colorScheme="purple" size="lg">
+                Contact us
+              </Button>
+            </Link>
           </Text>
         </Flex>
         <Flex w="75%" mt="2" alignItems="center">
           <Text fontSize="lg" mr="4">
             Join us as we redefine the boundaries of what fitness means to you,
-            one personalized workout at a time. Welcome to [Your Website Name],
-            where your fitness aspirations become an integral part of your
-            unique journey.
+            one personalized workout at a time. Welcome to Vitality Gym where
+            your fitness aspirations become an integral part of your unique
+            journey.
             <br />
             <br />
             <br />
-            <Button colorScheme="purple" size="lg">
-              Join the team of trainers
-            </Button>
+            <Link to="/workouts">
+              <Button colorScheme="purple" size="lg">
+                Sign up Today
+              </Button>
+            </Link>
           </Text>
           <Image
             src={testimonialImage3}

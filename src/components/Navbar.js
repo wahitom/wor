@@ -1,4 +1,4 @@
-import React ,{useContext} from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import {
@@ -19,18 +19,17 @@ import {
 import { ChevronDownIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 
 const Navbar = () => {
+  const { colorMode, toggleColorMode } = useColorMode();
 
- const { colorMode, toggleColorMode } = useColorMode();
+  const linkStyles = {
+    padding: "10px",
+  };
 
- const linkStyles = {
-         padding: "10px",
-       };
-  
   // here we check if a user is signed in using the authprovider
-  const { isAuthenticated , logout } = useContext(AuthContext);
-  
+  const { isAuthenticated, logout } = useContext(AuthContext);
+
   return (
-    <Flex p="4" bg="blue.200" color="white">
+    <Flex p="4" bg="blue.200" color="white" style={{ height: "20vh" }}>
       <Image
         src="https://images.template.net/wp-content/uploads/2014/09/Zenith-Fitness-Logo.jpg"
         alt="Gym Logo"
@@ -78,7 +77,7 @@ const Navbar = () => {
               </Link>
               <MenuItem onClick={logout}>
                 <Button variant="link" color="red.500">
-                  Logout
+                  <Link to={"/"}> Logout</Link>
                 </Button>
               </MenuItem>
             </MenuList>
