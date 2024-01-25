@@ -1,18 +1,70 @@
-import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { ChakraProvider, Box, CSSReset, Input, Stack, Button, Heading } from '@chakra-ui/react';
+import React, { useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
+import {
+  ChakraProvider,
+  Box,
+  CSSReset,
+  Input,
+  Stack,
+  Button,
+  Heading,
+} from "@chakra-ui/react";
+import { api } from "../utils/utils";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 function Login() {
-  // State variables to track the username and password
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  // Function to handle form submission
-  function handleLogin(e) {
-    e.preventDefault();
-    // TODO: Send a request to the authentication API with username and password.
-    // Handle the response accordingly, e.g., display an error message or redirect on success.
-  }
+  const { setIsAuthenticated } = useContext(AuthContext);
+
+  const formik = useFormik({
+    validationSchema: Yup.object().shape({
+      email: Yup.string()
+        .email("Enter a valid email address")
+        .required("Email address is required"),
+      password: Yup.string().required("Password is required"),
+    }),
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    onSubmit: async (values, { resetForm }) => {
+      // here is where we can run our query to our server
+
+      try {
+        const res = await api.post("login", values);
+        console.log(res);
+
+        toast.success(res.data.message);
+
+        //   reset for if successful
+        resetForm();
+
+        // 1. store details inside localstorage
+        localStorage.setItem("session", JSON.stringify(res.data));
+        setIsAuthenticated(true);
+
+        // 2. navigate user to homepage
+        navigate("/");
+
+        //persist user
+        //    redirect user to home page
+      } catch (error) {
+        const data = error.response.data;
+
+        toast.error(data.message);
+
+        console.log("Unable to log in");
+      }
+    },
+  });
+
+  console.log(formik.errors);
 
   return (
     <ChakraProvider>
@@ -42,20 +94,35 @@ function Login() {
               {/* Heading for the login form */}
               <Heading fontSize="2xl">Login</Heading>
               {/* Form with input fields and submit button */}
-              <form onSubmit={handleLogin}>
+              <form onSubmit={formik.handleSubmit}>
                 {/* Input for username or email */}
                 <Input
-                  type="text"
-                  placeholder="Username or Email"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  margin="normal"
+                  required
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  onChange={formik.handleChange}
+                  onBlur={formik.onBlur}
+                  value={formik.values.email}
+                  // error={Boolean(formik.errors.email)}
+                  // helperText={formik.errors.email}
                 />
                 {/* Input for password */}
                 <Input
+                  margin="normal"
+                  required
+                  id="password"
+                  label="Password"
                   type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  name="password"
+                  autoComplete="current-password"
+                  onChange={formik.handleChange}
+                  onBlur={formik.onBlur}
+                  value={formik.values.password}
+                  // error={Boolean(formik.errors.password)}
+                  // helperText={formik.errors.password}
                 />
                 {/* Button for submitting the form */}
                 <Button
@@ -67,7 +134,10 @@ function Login() {
                   Log In
                 </Button>
                 {/* Link to sign up */}
-                <p>Don't have an account? <RouterLink to="/signup">Signup</RouterLink></p>
+                <p>
+                  Don't have an account?{" "}
+                  <RouterLink to="/signup">Signup</RouterLink>
+                </p>
               </form>
             </Stack>
           </Box>
