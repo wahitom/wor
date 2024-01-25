@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
-import {
-  ChakraProvider,
-  CSSReset,
-  Box,
-  Input,
-  Stack,
-  Button,
-  Heading,
-} from '@chakra-ui/react';
+import { Link as RouterLink } from 'react-router-dom';
+import { ChakraProvider, Box, CSSReset, Input, Stack, Button, Heading } from '@chakra-ui/react';
 
 function Login() {
   // State variables to track the username and password
@@ -73,6 +66,8 @@ function Login() {
                 >
                   Log In
                 </Button>
+                {/* Link to sign up */}
+                <p>Don't have an account? <RouterLink to="/signup">Signup</RouterLink></p>
               </form>
             </Stack>
           </Box>
