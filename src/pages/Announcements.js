@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../utils/utils";
 
+// State to store announcements data
 const Announcements = () => {
   const [announcements, setAnnouncements] = useState([]);
 
-  // Fetch announcements
+  // Fetch announcements from the API
   useEffect(() => {
     api.get("announcements")
       .then((response) => {
