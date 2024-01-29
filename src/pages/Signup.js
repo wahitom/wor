@@ -1,253 +1,144 @@
-// Import necessary libraries and components
-import React, { useContext } from "react";
+import { useState } from "react";
+import { Formik, Form, Field } from "formik";
+import { api } from "../utils/utils";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext"; 
+import { useContext } from "react";
 import {
-  ChakraProvider,
   Box,
-  CSSReset,
   Input,
-  Stack,
   Button,
-  Heading,
+  FormControl,
+  FormErrorMessage,
+  VStack,
+  Center,
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
-import { useFormik } from "formik";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-import { api } from "../utils/utils";
 
-// Access the navigation functionality and authentication state from context
-function Signup() {
+// Validation schema using Yup
+const schema = Yup.object().shape({
+  username: Yup.string().required("Username is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  role: Yup.string().required("Role is required"),
+  password: Yup.string()
+    .required("Password is required")
+    .matches(
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/,
+      "Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character."
+    ),
+});
+
+const SignUp = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const { setIsAuthenticated } = useContext(AuthContext);
 
-  // Formik hook for managing form state and submission with Yup validation
-  const formik = useFormik({
-    // Define validation rules for each form field
-    validationSchema: Yup.object().shape({
-      first_name: Yup.string().required("First Name is required"),
-      last_name: Yup.string().required("Last Name is required"),
+  const onSubmit = async (values, { resetForm }) => {
+    try {
+      setIsLoading(true);
+      const res = await api.post("users", values);
 
-      // Repeat similar structure for other form fields
-      email: Yup.string()
-        .email("Enter a valid email address")
-        .required("Email address is required"),
-      phone: Yup.number().required("Phone number is required"),
-      password: Yup.string().required("Password is required"),
-      age: Yup.number().required("Age is required"),
-      weight: Yup.number().required("Weight is required"),
-      gender: Yup.string().required("Gender is required"),
-      role: Yup.string().required("Role is required"),
-    }),
+      toast.success(res.data.message);
+      // reset form
+      resetForm();
+      // 1. store inside local storage
+      localStorage.setItem("session", JSON.stringify(res.data));
+      setIsAuthenticated(true);
+      // 2. navigate user to homepage
+      navigate("/profile");
+    } catch (error) {
+      const data = error.response.data;
 
-    // Initialize form fields with default values
-    initialValues: {
-      first_name: "",
-      last_name: "",
-      email: "",
-      phone: "",
-      password: "",
-      age: "",
-      weight: "",
-      gender: "",
-      role: "",
-      // Repeat similar structure for other form fields
-    },
-    // Send a POST request to the API with form values
-    onSubmit: async (values, { resetForm }) => {
-      try {
-        const res = await api.post("users", values);
-        console.log(res);
-
-        // Show success message using toast notification
-        toast.success(res.data.message);
-
-        // Reset the form if successful
-        resetForm();
-
-        // Store details inside localStorage
-        localStorage.setItem("session", JSON.stringify(res.data));
-        setIsAuthenticated(true);
-
-        // Navigate user to homepage
-        navigate("/");
-
-        // Handle errors and show error message using toast notification
-      } catch (error) {
-        const data = error.response.data;
-
-        toast.error(data.message);
-
-        console.log("Unable to sign up");
-      }
-    },
-  });
+      toast.error(data.message);
+      console.log("Unable to login");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <ChakraProvider>
-      {/* Reset default styles for consistent styling */}
-      <CSSReset />
-      {/* Main container for centering the signup form */}
-      <Box
-        minH="100vh"
-        d="flex"
-        alignItems="center"
-        justifyContent="center"
-        bg="gray.100"
-      >
-        {/* Form container with border, padding, and shadow */}
-        <Box
-          borderWidth={1}
-          px={4}
-          width="md"
-          borderRadius={8}
-          boxShadow="lg"
-          bg="white"
+    <Center h="100vh" bg="black">
+      <Box p={4} borderRadius="md" bg="black" shadow="md">
+        <Formik
+          initialValues={{
+            username: "",
+            email: "",
+            role: "",
+            password: "",
+          }}
+          validationSchema={schema}
+          onSubmit={onSubmit}
         >
-          {/* Form content */}
-          <Box p={4}>
-            {/* Stack for organizing child components with spacing */}
-            <Stack spacing={4}>
-              {/* Heading for the signup form */}
-              <Heading fontSize="2xl">Signup</Heading>
+          <Form>
+            <VStack spacing={4} align="stretch">
+              <Field name="username">
+                {({ field, form }) => (
+                  <FormControl
+                    isInvalid={form.errors.username && form.touched.username}
+                  >
+                    <label>Enter username</label>
+                    <Input {...field} placeholder="Username" color="white" />
+                    <FormErrorMessage>{form.errors.username}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
 
-              {/* Form with input fields and submit button */}
-              <form onSubmit={formik.handleSubmit}>
-                {/* Input for first name */}
-                <Input
-                  margin="normal"
-                  required
-                  id="first_name"
-                  placeholder="First Name"
-                  name="first_name"
-                  onChange={formik.handleChange}
-                  onBlur={formik.onBlur}
-                  value={formik.values.first_name}
-                />
+              <Field name="email">
+                {({ field, form }) => (
+                  <FormControl
+                    isInvalid={form.errors.email && form.touched.email}
+                  >
+                    <label>Enter Email</label>
+                    <Input
+                      {...field}
+                      type="email"
+                      placeholder="Email"
+                      color="white"
+                    />
+                    <FormErrorMessage>{form.errors.email}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
 
-                {/* Input for last name */}
-                <Input
-                  margin="normal"
-                  required
-                  id="last_name"
-                  placeholder="Last Name"
-                  name="last_name"
-                  onChange={formik.handleChange}
-                  onBlur={formik.onBlur}
-                  value={formik.values.last_name}
-                />
+              <Field name="role">
+                {({ field, form }) => (
+                  <FormControl
+                    isInvalid={form.errors.role && form.touched.role}
+                  >
+                    <label>Enter role: Member</label>
+                    <Input {...field} placeholder="Role" color="white" />
+                    <FormErrorMessage>{form.errors.role}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
 
-                {/* Input for email */}
-                <Input
-                  margin="normal"
-                  required
-                  id="email"
-                  placeholder="Email Address"
-                  name="email"
-                  onChange={formik.handleChange}
-                  onBlur={formik.onBlur}
-                  value={formik.values.email}
-                />
+              <Field name="password">
+                {({ field, form }) => (
+                  <FormControl
+                    isInvalid={form.errors.password && form.touched.password}
+                  >
+                    <label>Enter Password</label>
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="Password"
+                      color="white"
+                    />
+                    <FormErrorMessage>{form.errors.password}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
 
-                {/* Input for phone */}
-                <Input
-                  margin="normal"
-                  required
-                  id="phone"
-                  placeholder="Phone Number"
-                  name="phone"
-                  type="tel"
-                  onChange={formik.handleChange}
-                  onBlur={formik.onBlur}
-                  value={formik.values.phone}
-                />
-
-                {/* Input for password */}
-                <Input
-                  margin="normal"
-                  required
-                  id="password"
-                  placeholder="Password"
-                  type="password"
-                  name="password"
-                  onChange={formik.handleChange}
-                  onBlur={formik.onBlur}
-                  value={formik.values.password}
-                />
-
-                {/* Input for age */}
-                <Input
-                  margin="normal"
-                  required
-                  id="age"
-                  placeholder="Age"
-                  type="number"
-                  name="age"
-                  onChange={formik.handleChange}
-                  onBlur={formik.onBlur}
-                  value={formik.values.age}
-                />
-
-                {/* Input for weight */}
-                <Input
-                  margin="normal"
-                  required
-                  id="weight"
-                  placeholder="Weight"
-                  type="number"
-                  name="weight"
-                  onChange={formik.handleChange}
-                  onBlur={formik.onBlur}
-                  value={formik.values.weight}
-                />
-
-                {/* Input for gender */}
-                <Input
-                  margin="normal"
-                  required
-                  id="gender"
-                  placeholder="Gender"
-                  name="gender"
-                  onChange={formik.handleChange}
-                  onBlur={formik.onBlur}
-                  value={formik.values.gender}
-                />
-
-                {/* Input for role */}
-                <Input
-                  margin="normal"
-                  required
-                  id="role"
-                  placeholder="Role"
-                  name="role"
-                  onChange={formik.handleChange}
-                  onBlur={formik.onBlur}
-                  value={formik.values.role}
-                />
-
-                {/* Button for submitting the form */}
-                <Button
-                  type="submit"
-                  colorScheme="teal"
-                  size="lg"
-                  fontSize="md"
-                >
-                  Signup
-                </Button>
-
-                {/* Link to login */}
-                <p>
-                  Already have an account?{" "}
-                  <RouterLink to="/login">Login</RouterLink>
-                </p>
-              </form>
-            </Stack>
-          </Box>
-        </Box>
+              <Button colorScheme="green" type="submit" isLoading={isLoading}>
+                Sign Up
+              </Button>
+            </VStack>
+          </Form>
+        </Formik>
       </Box>
-    </ChakraProvider>
+    </Center>
   );
-}
+};
 
-export default Signup;
+export default SignUp;

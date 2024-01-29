@@ -11,11 +11,13 @@ import {
 import { api } from "../utils/utils";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-// State to store the list of workouts
 const Workout = () => {
   const [workouts, setWorkouts] = useState([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     api
@@ -32,8 +34,25 @@ const Workout = () => {
     workout.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const bookWorkout = (workoutId, workoutName) => {
-    toast.success(`Successfully booked ${workoutName}!`);
+  const bookWorkout = async (id) => {
+    try {
+      setLoading(true);
+
+      const response = await api.post("userworkouts", {
+        workout_id: id,
+      });
+
+      if (response.status === 201) {
+        toast.success("Workout booked successfully");
+      } else {
+        toast.error("Failed to book workout. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error booking workout:", error);
+      toast.error("Error booking workout. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -61,14 +80,16 @@ const Workout = () => {
               <Text fontWeight="bold">Name : {workout.name}</Text>
               <Text>Trainer : {workout.trainer}</Text>
               <Text>Description : {workout.description}</Text>
-              <Text>Price:{workout.price}</Text>
-              <Text>{workout.time}</Text>
+              <Text>Time : {workout.time}</Text>
+              <Text>Price: {workout.price}</Text>
               <Button
                 colorScheme="teal"
                 mt={4}
-                onClick={() => bookWorkout(workout.id, workout.name)}
+                onClick={() => bookWorkout(workout.id)}
+                isLoading={loading}
+                isDisabled={loading}
               >
-                Book Now
+                {loading ? "Booking..." : "Book Now"}
               </Button>
             </VStack>
           </Box>
