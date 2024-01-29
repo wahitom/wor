@@ -9,15 +9,14 @@ import {
   Input,
 } from "@chakra-ui/react";
 import { api } from "../utils/utils";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-// State to store the list of workouts
 const Workout = () => {
   const [workouts, setWorkouts] = useState([]);
-
-  // State for search input
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Fetch workouts from the API when the component mounts
   useEffect(() => {
     api
       .get("workouts")
@@ -29,13 +28,34 @@ const Workout = () => {
       });
   }, []);
 
-  // Filter workouts based on search input
   const filteredWorkouts = workouts.filter((workout) =>
     workout.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  const bookWorkout = async (id) => {
+    try {
+      setLoading(true);
+
+      const response = await api.post("userworkouts", {
+        workout_id: id,
+      });
+
+      if (response.status === 201) {
+        toast.success("Workout booked successfully");
+      } else {
+        toast.error("Failed to book workout. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error booking workout:", error);
+      toast.error("Error booking workout. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
+      <ToastContainer />
       <Input
         placeholder="Search workouts..."
         value={search}
@@ -44,12 +64,7 @@ const Workout = () => {
         mb={4}
         width="80%"
       />
-      <Flex
-        flexWrap="wrap"
-        justifyContent="space-between"
-        spacing={4}
-        style={{ padding: "20px", marginLeft: "auto", marginRight: "auto" }}
-      >
+      <Flex flexWrap="wrap" justifyContent="space-between" spacing={4}>
         {filteredWorkouts.map((workout) => (
           <Box
             key={workout.id}
@@ -57,22 +72,22 @@ const Workout = () => {
             borderWidth="2px"
             borderRadius="lg"
             overflow="hidden"
-            style={{
-              padding: "20px",
-              marginBottom: 4,
-              marginLeft: "10px",
-              marginRight: "10px",
-            }}
           >
             <Image src={workout.image} alt={workout.name} maxH="150px" />
             <VStack p={4} align="start">
               <Text fontWeight="bold">Name : {workout.name}</Text>
               <Text>Trainer : {workout.trainer}</Text>
               <Text>Description : {workout.description}</Text>
-              <Text>ksh.{workout.price}</Text>
-              <Text>{workout.time}</Text>
-              <Button colorScheme="teal" mt={4}>
-                Book Now
+              <Text>Time : {workout.time}</Text>
+              <Text>Price: {workout.price}</Text>
+              <Button
+                colorScheme="teal"
+                mt={4}
+                onClick={() => bookWorkout(workout.id)}
+                isLoading={loading}
+                isDisabled={loading}
+              >
+                {loading ? "Booking..." : "Book Now"}
               </Button>
             </VStack>
           </Box>

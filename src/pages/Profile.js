@@ -9,27 +9,46 @@ import {
   Tr,
   Th,
   Td,
-  Button,
   Input,
   IconButton,
   useToast,
+  Button,
 } from "@chakra-ui/react";
+
 import { DeleteIcon } from "@chakra-ui/icons";
 
 const Profile = () => {
   const [userData, setUserData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [editedUserData, setEditedUserData] = useState({});
-  //const { isAuthenticated } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
-// Fetch user data when the component mounts
+  const [bookedWorkouts, setBookedWorkouts] = useState([]);
+
+  useEffect(() => {
+    const getBookedWorkouts = async () => {
+      try {
+        const response = await api.get("userworkouts");
+        if (response.status === 200) {
+          setBookedWorkouts(response.data);
+        } else {
+          console.error("Failed to fetch booked workouts");
+        }
+      } catch (error) {
+        console.error("Error fetching booked workouts:", error);
+      }
+    };
+    getBookedWorkouts();
+  }, []);
+
+  // Fetch user data when the component mounts
   useEffect(() => {
     api
-      .get(`users/${1}`)
+      .get(`profile`)
       .then((response) => setUserData(response.data))
       .catch((error) => console.error("Error fetching user data", error));
-  });// Added dependency array to ensure useEffect runs only once
+  }, []); // Added dependency array to ensure useEffect runs only once
 
   // Enable editing mode and create a copy of user data for editing
   const handleEdit = () => {
@@ -39,8 +58,11 @@ const Profile = () => {
 
   // Save edited user data to the API
   const handleSave = () => {
+    // Set loading state to true before making the API call
+    setIsLoading(true);
+
     api
-      .patch(`users/${1}`, editedUserData)
+      .put(`profile`, editedUserData)
       .then((response) => {
         toast({
           title: "Profile Updated",
@@ -51,7 +73,6 @@ const Profile = () => {
         setIsEditing(false);
         setUserData(response.data);
       })
-
       .catch((error) => {
         console.error("Error updating user data", error);
         toast({
@@ -60,17 +81,21 @@ const Profile = () => {
           duration: 3000,
           isClosable: true,
         });
+      })
+      .finally(() => {
+        // Set loading state back to false after the API call is complete
+        setIsLoading(false);
       });
   };
-// Handle input changes during editing
+  // Handle input changes during editing
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditedUserData((prevData) => ({ ...prevData, [name]: value }));
   };
-// Delete a user's workout
-  const handleWorkoutDelete = (workoutId) => {
+  // Delete a user's workout
+  const handleWorkoutDelete = (id) => {
     api
-      .delete(`workouts/${workoutId}`)
+      .delete(`userworkouts/${id}`)
       .then(() => {
         toast({
           title: "Workout Deleted",
@@ -93,9 +118,8 @@ const Profile = () => {
   return (
     <Box p={4}>
       <Heading mb={2} ml={100}>
-        User Profile
+        My-Profile
       </Heading>
-
       <Table variant="simple">
         <Thead>
           <Tr>
@@ -127,72 +151,11 @@ const Profile = () => {
                 </Td>
               </Tr>
               <Tr>
-                <Td>Email</Td>
-                <Td>
-                  <Input
-                    name="email"
-                    value={editedUserData.email}
-                    onChange={handleInputChange}
-                  />
-                </Td>
-              </Tr>
-              <Tr>
                 <Td>Phone</Td>
                 <Td>
                   <Input
                     name="phone"
                     value={editedUserData.phone}
-                    onChange={handleInputChange}
-                  />
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>Password</Td>
-                <Td>
-                  <Input
-                    name="password"
-                    type="password"
-                    value={editedUserData.password}
-                    onChange={handleInputChange}
-                  />
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>Gender</Td>
-                <Td>
-                  <Input
-                    name="gender"
-                    value={editedUserData.gender}
-                    onChange={handleInputChange}
-                  />
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>Age</Td>
-                <Td>
-                  <Input
-                    name="age"
-                    value={editedUserData.age}
-                    onChange={handleInputChange}
-                  />
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>Weight</Td>
-                <Td>
-                  <Input
-                    name="weight"
-                    value={editedUserData.weight}
-                    onChange={handleInputChange}
-                  />
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>Role</Td>
-                <Td>
-                  <Input
-                    name="role"
-                    value={editedUserData.role}
                     onChange={handleInputChange}
                   />
                 </Td>
@@ -209,40 +172,21 @@ const Profile = () => {
                 <Td>{userData.last_name}</Td>
               </Tr>
               <Tr>
-                <Td>Email</Td>
-                <Td>{userData.email}</Td>
-              </Tr>
-              <Tr>
                 <Td>Phone</Td>
                 <Td>{userData.phone}</Td>
-              </Tr>
-              <Tr>
-                <Td>Gender</Td>
-                <Td>{userData.gender}</Td>
-              </Tr>
-              <Tr>
-                <Td>Password</Td>
-                <Td>{userData.password}</Td>
-              </Tr>
-              <Tr>
-                <Td>Age</Td>
-                <Td>{userData.age}</Td>
-              </Tr>
-              <Tr>
-                <Td>Weight</Td>
-                <Td>{userData.weight}</Td>
-              </Tr>
-              <Tr>
-                <Td>Role</Td>
-                <Td>{userData.role}</Td>
               </Tr>
             </div>
           )}
         </Tbody>
       </Table>
-
       {isEditing ? (
-        <Button colorScheme="teal" onClick={() => handleSave()} mt={4} mr={2}>
+        <Button
+          colorScheme="teal"
+          onClick={handleSave}
+          mt={4}
+          mr={2}
+          isLoading={isLoading}
+        >
           Save
         </Button>
       ) : (
@@ -252,7 +196,7 @@ const Profile = () => {
       )}
 
       <Heading mt={8} mb={4} ml={100}>
-        User Workouts
+        My Workouts
       </Heading>
       <Table variant="simple">
         <Thead>
@@ -265,22 +209,21 @@ const Profile = () => {
           </Tr>
         </Thead>
         <Tbody>
-          {userData.user_workouts &&
-            userData.user_workouts.map((workout) => (
-              <Tr key={workout.id}>
-                <Td>{workout.name}</Td>
-                <Td>{workout.trainer}</Td>
-                <Td>{workout.description}</Td>
-                <Td>{workout.time}</Td>
-                <Td>
-                  <IconButton
-                    icon={<DeleteIcon />}
-                    colorScheme="red"
-                    onClick={() => handleWorkoutDelete(workout.id)}
-                  />
-                </Td>
-              </Tr>
-            ))}
+          {bookedWorkouts.map((workout) => (
+            <Tr key={workout.id}>
+              <Td>{workout.workout.name}</Td>
+              <Td>{workout.workout.trainer}</Td>
+              <Td>{workout.workout.description}</Td>
+              <Td>{workout.workout.time}</Td>
+              <Td>
+                <IconButton
+                  icon={<DeleteIcon />}
+                  colorScheme="red"
+                  onClick={() => handleWorkoutDelete(workout.id)}
+                />
+              </Td>
+            </Tr>
+          ))}
         </Tbody>
       </Table>
     </Box>
