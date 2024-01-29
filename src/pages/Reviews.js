@@ -55,7 +55,6 @@ function Review() {
   return (
     <Box p={4}>
       <Heading mb={4}>Review App</Heading>
-
       <FormControl mb={4}>
         <FormLabel>Username</FormLabel>
         <Input
@@ -65,7 +64,6 @@ function Review() {
           onChange={(e) => setNewUsername(e.target.value)}
         />
       </FormControl>
-
       <FormControl mb={4}>
         <FormLabel>Comment</FormLabel>
         <Textarea
@@ -74,17 +72,17 @@ function Review() {
           onChange={(e) => setNewComment(e.target.value)}
         />
       </FormControl>
-
       <Button colorScheme="blue" onClick={handlePostComment} mb={4}>
         Post Comment
       </Button>
 
-      {comments.map((comment) => (
-        <Box key={comment.id} borderWidth="1px" p={4} mb={4}>
-          <Heading size="md">{comment.username}</Heading>
-          <p>{comment.comment}</p>
-        </Box>
-      ))}
+      {Array.isArray(comments) &&
+        comments.map((comment) => (
+          <Box key={comment.id} borderWidth="1px" p={4} mb={4}>
+            <Heading size="md">{comment.username}</Heading>
+            <p>{comment.comment}</p>
+          </Box>
+        ))}
 
       <Button colorScheme="teal" onClick={fetchComments}>
         See More Comments
@@ -93,4 +91,4 @@ function Review() {
   );
 }
 
-export default Review
+export default Review;

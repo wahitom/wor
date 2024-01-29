@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext"; 
+import { AuthContext } from "../context/AuthContext";
 import {
   Box,
   Flex,
@@ -44,11 +44,11 @@ const Navbar = () => {
         <Spacer />
         {isAuthenticated && (
           <Box display={{ base: "none", md: "block" }}>
-            <Link to="/home" style={linkStyles}>
+            <Link to="/" style={linkStyles}>
               Home
             </Link>
-            <Link to="/services" style={linkStyles}>
-              services
+            <Link to="/workouts" style={linkStyles}>
+              Workouts
             </Link>
             <Link to="/reviews" style={linkStyles}>
               Reviews
@@ -89,7 +89,7 @@ const Navbar = () => {
         ) : (
           <Box display={{ base: "none", md: "block" }}>
             <Button sx={{ my: 2, color: "black", display: "block" }}>
-              <Link to={"/"}>Login</Link>
+              <Link to={"/login"}>Login</Link>
             </Button>
             <Button sx={{ my: 2, color: "black", display: "block" }}>
               <Link to={"/Signup"}>create account</Link>
