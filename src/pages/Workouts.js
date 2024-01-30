@@ -11,8 +11,6 @@ import {
 import { api } from "../utils/utils";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const Workout = () => {
   const [workouts, setWorkouts] = useState([]);
